@@ -4,7 +4,7 @@ Donate link: http://joaoubaldo.com
 Tags: gallery, piwigo, integration, media
 Requires at least: 3.0.4
 Tested up to: 3.0.4
-Stable tag: trunk
+Stable tag: 0.8
 
 This plugin links images from a Piwigo gallery in WordPress posts.
 
