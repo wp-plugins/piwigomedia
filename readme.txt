@@ -12,9 +12,10 @@ This plugins allows media from a Piwigo site to be inserted into WordPress posts
 
 PiwigoMedia is a WordPress plugin that allows easy insertion and linking of images hosted in a Piwigo site, into WordPress posts, using the TinyMCE editor.
 The main advantages of PiwigoMedia are:
-* Simplicity - simple to use and configure;
-* No duplicated media - images are linked from Piwigo's site, nothing is imported into WordPress;
-* Independency - WordPress and Piwigo don't have to be installed on the same server since PiwigoMedia uses Piwigo's webapi.
+* Simplicity. Simple to use and configure
+* No duplicated media. Images are linked from Piwigo's site, nothing is imported into WordPress
+* Independency. WordPress and Piwigo don't have to be installed on the same server since PiwigoMedia uses Piwigo's webapi
+
 
 == Installation ==
 
