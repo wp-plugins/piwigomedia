@@ -1,0 +1,167 @@
+# Copyright (C) 2011 PiwigoMedia
+# This file is distributed under the same license as the PiwigoMedia package.
+# Erkan <bravehearterkan@hotmail.com>, 2011
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PiwigoMedia Türkçe\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/piwigomedia\n"
+"POT-Creation-Date: 2010-12-19 15:59+0200\n"
+"PO-Revision-Date: 2011-02-18 02:28+0200\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Turkish\n"
+"X-Poedit-Country: TURKEY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: piwigomedia_admin.php:23
+msgid "PiwigoMedia settings"
+msgstr "PiwigoMedia Ayarları"
+
+#: piwigomedia_admin.php:27
+msgid "Primary settings"
+msgstr "Temel Ayarlar"
+
+#: piwigomedia_admin.php:30
+msgid "Piwigo URL"
+msgstr "Piwigo URL'si"
+
+#: piwigomedia_admin.php:30
+msgid "Required field"
+msgstr "Gerekli alan"
+
+#: piwigomedia_admin.php:34
+msgid "Example: http://localhost/piwigo."
+msgstr "Örneğin: http://localhost/piwigo"
+
+#: piwigomedia_admin.php:38
+msgid "Images per page"
+msgstr "Sayfa başına resimler"
+
+#: piwigomedia_admin.php:41
+msgid "Number of images to display per page, in the selection screen."
+msgstr "Seçim ekranında sayfa başına gösterilecek resimlerin sayısı."
+
+#: piwigomedia_admin.php:45
+msgid "Other settings"
+msgstr "Diğer Ayarlar"
+
+#: piwigomedia_admin.php:48
+msgid "Web service script"
+msgstr "Internet hizmeti komutu"
+
+#: piwigomedia_admin.php:52
+msgid "Only change this value if you need to. Default: ws.php."
+msgstr "Sadece eğer ihtiyacınız varsa bu değeri değiştirebilirsiniz. Varsayılan: ws.php"
+
+#: piwigomedia_admin.php:57
+msgid "Save changes"
+msgstr "Değişiklikleri kaydet"
+
+#: popup.php:19
+msgid "Error while reading from"
+msgstr "Okurken hata oluştu"
+
+#: popup.php:21
+msgid "Please verify PiwigoMedia's configuration."
+msgstr "PiwigoMedia yapılandırmasını kontrol ediniz."
+
+#: popup.php:23
+msgid "Error reading image information, please try again."
+msgstr "Resim bilgileri okumada hata, lütfen tekrar deneyin."
+
+#: popup.php:127
+msgid "1. Select a category"
+msgstr "1. Kategori seç"
+
+#: popup.php:145
+msgid "Category:"
+msgstr "Kategori:"
+
+#: popup.php:153
+msgid "Select"
+msgstr "Seç"
+
+#: popup.php:161
+msgid "2. Choose the images"
+msgstr "2. Resimleri seç"
+
+#: popup.php:183
+msgid "3. Customize"
+msgstr "3. Özelleştir"
+
+#: popup.php:185
+msgid "Alignment:"
+msgstr "Hizalama:"
+
+#: popup.php:186
+msgid "None"
+msgstr "Hiçbiri"
+
+#: popup.php:187
+msgid "Left"
+msgstr "Sol"
+
+#: popup.php:188
+msgid "Center"
+msgstr "Orta"
+
+#: popup.php:189
+msgid "Right"
+msgstr "Sağ"
+
+#: popup.php:192
+msgid "Link to:"
+msgstr "Bağlantısı:"
+
+#: popup.php:193
+msgid "Image page"
+msgstr "Resim sayfası"
+
+#: popup.php:194
+msgid "Fullsize image"
+msgstr "Tam boyut resim"
+
+#: popup.php:197
+msgid "Link target:"
+msgstr "Bağlantı Hedefi:"
+
+#: popup.php:198
+msgid "New window"
+msgstr "Yeni pencere"
+
+#: popup.php:199
+msgid "Same window"
+msgstr "Aynı pencere"
+
+#: popup.php:205
+msgid "Insert into post"
+msgstr "Yazı içine ekle"
+
+#: popup.php:211
+msgid "author website"
+msgstr "yapımcı websitesi"
+
+#. Plugin Name of the plugin/theme
+msgid "PiwigoMedia"
+msgstr "PiwigoMedia"
+
+#. #-#-#-#-#  piwigomedia.pot (PiwigoMedia 0.9)  #-#-#-#-#
+#. Plugin URI of the plugin/theme
+#. #-#-#-#-#  piwigomedia.pot (PiwigoMedia 0.9)  #-#-#-#-#
+#. Author URI of the plugin/theme
+msgid "http://joaoubaldo.com"
+msgstr "http://joaoubaldo.com"
+
+#. Description of the plugin/theme
+msgid "This plugins allows media from a Piwigo site to be inserted into WordPress posts."
+msgstr "Bu eklenti ile Piwigo albüm sitenizdeki resimleri WordPress yazılarınızda kullanabileceksiniz."
+
+#. Author of the plugin/theme
+msgid "João C."
+msgstr "João C."
+

@@ -10,7 +10,6 @@ function register_my_settings() {
     if (!current_user_can('manage_options'))
         return;
     register_setting('piwigomedia-options', 'piwigomedia_piwigo_url');
-    register_setting('piwigomedia-options', 'piwigomedia_piwigo_ws_path');
     register_setting('piwigomedia-options', 'piwigomedia_images_per_page', 
         'absint');
 }
@@ -39,17 +38,6 @@ function render_options_html() {
                 <td><input type="text" name="piwigomedia_images_per_page" 
                     value="<?php echo get_option('piwigomedia_images_per_page', '30'); ?>" class="small-text"/>
                     <span class="description">(<?php _e('Number of images to display per page, in the selection screen.', 'piwigomedia') ?>)</span>
-                </td>
-            </tr>
-        </table>
-        <h3><?php _e('Other settings', 'piwigomedia') ?></h3>
-        <table class="form-table">
-            <tr valign="top">
-                <th scope="row"><?php _e('Web service script', 'piwigomedia') ?></th>
-                <td><input type="text" name="piwigomedia_piwigo_ws_path" 
-                    value="<?php echo get_option('piwigomedia_piwigo_ws_path', 
-                        'ws.php'); ?>"/>
-                    <span class="description">(<?php _e('Only change this value if you need to. Default: ws.php.', 'piwigomedia') ?>)</span>
                 </td>
             </tr>
         </table>

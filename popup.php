@@ -11,8 +11,7 @@
     $this_cat_id = $_GET['category'] != "" ? $_GET['category'] : 0;
     $this_page = $_GET['cat_page'] != "" ? $_GET['cat_page'] : 0;
     $per_page = get_option('piwigomedia_images_per_page', '30');
-    $ws_url = get_option('piwigomedia_piwigo_url').'/'.
-        get_option('piwigomedia_piwigo_ws_path');
+    $ws_url = get_option('piwigomedia_piwigo_url').'/ws.php';
     $cats_res = null;
     $error = null;
     $error_msg = array(
