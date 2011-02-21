@@ -4,17 +4,19 @@ Donate link: http://joaoubaldo.com
 Tags: gallery, piwigo, integration, media
 Requires at least: 3.0.1
 Tested up to: 3.0.5
-Stable tag: 0.9.1
+Stable tag: 0.9.6
 
 This plugins allows media from a Piwigo site to be inserted into WordPress posts.
 
 == Description ==
 
 PiwigoMedia is a WordPress plugin that allows easy insertion and linking of images hosted in a Piwigo site, into WordPress posts, using the TinyMCE editor.
+
 The main advantages of PiwigoMedia are:
-* Simplicity. Simple to use and configure
-* No duplicated media. Images are linked from Piwigo's site, nothing is imported into WordPress
-* Independency. WordPress and Piwigo don't have to be installed on the same server since PiwigoMedia uses Piwigo's webapi
+
+*   Simplicity. Simple to use and configure
+*   No duplicated media. Images are linked from Piwigo's site, nothing is imported into WordPress
+*   Independency. WordPress and Piwigo don't have to be installed on the same server since PiwigoMedia uses Piwigo's webapi
 
 
 == Installation ==
@@ -47,6 +49,16 @@ its webapi data struture doesn't change.
 1. PiwigoMedia's main window
 
 == Changelog ==
+= 0.9.6 =
+* new: support for multiple Piwigo sites.
+* new: new text added. translations need update (hu_HU, tr).
+* update: improved UI.
+* update: POT file updated.
+
+= 0.9.2 =
+* new: Hungarian (hu_HU) translation added (thanks to samli).
+* new: Portuguese (pt_PT) translation added (thanks to me ;-p).
+
 = 0.9.1 =
 * new: Turkish translation added (thanks to Nakre).
 * update: POT file updated.
