@@ -46,11 +46,18 @@ function insert_image_obj(img) {
     else
         url = img.categories[0].page_url; // image page
 
+    imurl = $('div.style-section > fieldset > '+
+        'input[name="whatinsert"]:checked').val();
+    if (imurl == 'fullsize')
+        imurl = img.element_url
+    else
+        imurl = img.tn_url
+
     window.parent.tinyMCE.execCommand('mceInsertContent', 
         false, 
         '<a href="'+url+'" target="'+target+'" '+
         'class="piwigomedia-single-image">'+
-            '<img src="'+img.tn_url+'" class="'+align+'" />'+
+            '<img src="'+imurl+'" class="'+align+'" />'+
         '</a>'
     );
 };
