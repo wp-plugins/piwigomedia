@@ -238,6 +238,11 @@
             <div class="style-section section">
                 <p class="instruction"><?php _e('Customize', 'piwigomedia') ?></p>
                 <fieldset>
+                    <legend><?php _e('Insert:', 'piwigomedia') ?></legend>
+                    <?php _e('Thumbnail', 'piwigomedia') ?> <input type="radio" name="whatinsert" value="thumb" checked="checked"/>
+                    <?php _e('Fullsize image', 'piwigomedia') ?> <input type="radio" name="whatinsert" value="fullsize"/>
+                </fieldset>
+                <fieldset>
                     <legend><?php _e('Alignment:', 'piwigomedia') ?></legend>
                     <?php _e('None', 'piwigomedia') ?> <input type="radio" name="alignment" value="none" checked="checked"/>
                     <?php _e('Left', 'piwigomedia') ?> <input type="radio" name="alignment" value="left"/>

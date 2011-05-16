@@ -4,7 +4,7 @@ Donate link: http://joaoubaldo.com
 Tags: gallery, piwigo, integration, media
 Requires at least: 3.0.1
 Tested up to: 3.0.5
-Stable tag: 0.9.7
+Stable tag: 0.9.8
 
 This plugins allows media from a Piwigo site to be inserted into WordPress posts.
 
@@ -49,6 +49,10 @@ its webapi data struture doesn't change.
 1. PiwigoMedia's main window
 
 == Changelog ==
+= 0.9.8 =
+* new: option to insert full images.
+* update: Deutsch (de_DE), Swedish (sv_SE) and Italian (it_IT) translations added (thanks to their authors!).
+
 = 0.9.7 =
 * update: Turkish (tr) and Hungarian (hu_HU) translations are up-to-date (thanks to original authors).
 
