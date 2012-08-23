@@ -10,6 +10,16 @@ function get_image(id) {
     return img;
 };
 
+// get image thumbnail url
+function get_image_thumb(img) {
+    if (img.derivatives == undefined)
+        img_src = img.tn_url;
+    else
+        img_src = img.derivatives.thumb.url;
+    return img_src;
+}
+
+
 // toggle image selection
 function toggle_image_selection(id) {
     img = get_image(id);
@@ -31,33 +41,32 @@ function insert_image_obj(img) {
         align = 'alignright';
     else
         align = '';
+    target_ = $('div.style-section > fieldset > input[name="target"]:checked').val();
 
-    target = $('div.style-section > fieldset > '+
-        'input[name="target"]:checked').val();
-    if (target == 'same')
-        target = '_self';
+    if (target_ == 'same')
+        target_ = '_self';
     else
-        target = '_blank';
+        target_ = '_blank';
 
-    url = $('div.style-section > fieldset > '+
+    url_ = $('div.style-section > fieldset > '+
         'input[name="url"]:checked').val();
-    if (url == 'fullsize')
-        url = img.element_url; // fullsize image
+    if (url_ == 'fullsize')
+        url_ = img.element_url; // fullsize image
     else
-        url = img.categories[0].page_url; // image page
+        url_ = img.categories[0].page_url; // image page
 
-    imurl = $('div.style-section > fieldset > '+
+    imurl_ = $('div.style-section > fieldset > '+
         'input[name="whatinsert"]:checked').val();
-    if (imurl == 'fullsize')
-        imurl = img.element_url
+    if (imurl_ == 'fullsize')
+        imurl_ = img.element_url;
     else
-        imurl = img.tn_url
+        imurl_ = get_image_thumb(img);
 
     window.parent.tinyMCE.execCommand('mceInsertContent', 
         false, 
-        '<a href="'+url+'" target="'+target+'" '+
+        '<a href="'+url_+'" target="'+target_+'" '+
         'class="piwigomedia-single-image">'+
-            '<img src="'+imurl+'" class="'+align+'" />'+
+            '<img src="'+imurl_+'" class="'+align+'" />'+
         '</a>'
     );
 };
@@ -114,7 +123,7 @@ $(document).ready(function() {
     $(images._content).each(function(index, obj) {
         $('ul.image-selector').append(
             '<li title="'+obj.id+'">'+
-                '<img src="'+obj.tn_url+'" '+
+                '<img src="'+get_image_thumb(obj)+'" '+
                 'onclick="toggle_image_selection(\''+obj.id+'\');" />'+
             '</li>'
         );

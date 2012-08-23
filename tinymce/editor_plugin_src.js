@@ -12,10 +12,10 @@
                         // Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
                         ed.addCommand('mcePiwigoMedia', function() {
                                 ed.windowManager.open({
-                                        file : url+'/../popup.php',
+                                        file : url+'/../popup.php'+tinymce.DOM.get('post_ID').value,
                                         width : 700,
                                         height : 480,
-                                        inline : 1,
+                                        inline : 1
                                 }, {
                                         plugin_url : url
                                 });
