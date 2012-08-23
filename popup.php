@@ -2,15 +2,28 @@
     require_once('functions.php');
     require_once('../../../wp-load.php');
 
-    if (!current_user_can('edit_posts') && !current_user_can('edit_pages'))
-        die('no access');
-
     $categories = array();
     $category = null;
     $images = array();
     $this_cat_id = $_GET['category'] != "" ? $_GET['category'] : 0;
     $this_page = $_GET['cat_page'] != "" ? $_GET['cat_page'] : 0;
+    $post_id = $_GET['post_id'];
+
+    if ($post_id == null)
+        die('missing post id');
+
+    $post_type = get_post_type($post_id);
+
+    if ($post_type != 'page' && $post_type != 'post')
+        die('invalid post type');
+
     $per_page = get_option('piwigomedia_images_per_page', '30');
+
+    if ( $post_type == 'page' && !current_user_can('edit_pages'))
+        die('no access');
+
+    if ( $post_type == 'post' && !current_user_can('edit_posts'))
+        die('no access');
 
     // read site 
     $ws_url = null;
@@ -153,6 +166,7 @@
             <div class="site-category-section section">
                 <p class="instruction"><?php _e('Choose a site', 'piwigomedia') ?></p>
                 <form method="get" class="site-selection" action="">
+                    <input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
                     <?php _e('Piwigo site:', 'piwigomedia') ?>
                     <select name="site">
                         <?php
@@ -170,6 +184,7 @@
                 <p class="instruction"><?php _e('Select a category', 'piwigomedia') ?></p>
                 <?php
                 echo "<form method=\"get\" class=\"category-selection\"  action=\"\">";
+                echo "<input type=\"hidden\" name=\"post_id\" value=\"".$post_id."\">";
                 echo '<input type="hidden" name="cat_page" value="0"/>';
                 echo '<input type="hidden" name="site" value="'.$site_idx.'"/>';
                 echo __('Category:', 'piwigomedia').' <select name="category">';
@@ -269,6 +284,6 @@
             </div>
             <?php } ?>
        <?php } ?>
-        <div class="footer">PiwigoMedia 2011 - <a href="http://joaoubaldo.com/" target="_blank"><?php _e('author website', 'piwigomedia') ?></a></div>
+        <div class="footer">PiwigoMedia 2012 - <a href="http://joaoubaldo.com/" target="_blank"><?php _e('author website', 'piwigomedia') ?></a></div>
     </body>
 </html>
