@@ -133,7 +133,17 @@ div.footer {
 }
 
 
+.messages-section {
+    display: none;
+}
 
+    .messages-section li.info {
+        color: green;
+    }
+
+    .messages-section li.error {
+        color: red;
+    }
 
 .current-category {
     text-align: right;
@@ -168,7 +178,6 @@ div.footer {
     margin: 4px 0;
     font-size: 120%;
     font-style: italic;
-
 }
 
     .page-selection ol {
@@ -179,16 +188,18 @@ div.footer {
             display: inline;
             border-right: 1px solid #a0a0a0;
             padding: 2px 5px;
+            cursor: pointer;
+            color: #2B6FB6;
         }
 
             .page-selection ol li.last {
                 border: 0;
             }
 
-            .page-selection ol li a {
-                text-decoration: none;
+            .page-selection ol li.selected {
+                color: orange;
             }
-
+        
 
 
 ul.image-selector {
@@ -211,6 +222,8 @@ ul.image-selector {
         cursor: pointer;
         padding: 4px;
         border: 1px solid #2B6FB6;
+        max-width: 140px;
+        max-height: 140px;
     }
 
 
@@ -231,4 +244,21 @@ ul.image-selector {
         font-weight: bold;
         text-align: center;
     }
+
+
+div.images-section, div.style-section, div.confirmation-section {
+    display: none;
+}
+
+#loading {
+    display: none;
+    background: #fff;
+    color: #2B6FB6;
+    position: absolute;
+    z-index: 999;
+    width: 100px
+    height: 2em;
+    top: 0;
+    left: 0;
+}
 
