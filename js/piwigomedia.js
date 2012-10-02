@@ -1,15 +1,3 @@
-// get image by id
-function get_image(id) {
-    img = null;
-    $(images._content).each(function(index, obj) {
-        if (obj.id == id) {
-            img = obj;
-            return false;
-        }
-    });
-    return img;
-};
-
 // get image thumbnail url
 function get_image_thumb(img) {
     if (img.derivatives == undefined)
@@ -19,17 +7,144 @@ function get_image_thumb(img) {
     return img_src;
 }
 
-
-// toggle image selection
-function toggle_image_selection(id) {
-    img = get_image(id);
-    if (img == null)
-        return false;
-
+// toggle visual selection
+function toggle_selection(id) {
+    found = -1;
+    $.each(selection, function(idx, el) {
+        if (el.id == id) {
+            found = idx;
+            return false;
+        }
+    });
+    if (found >= 0)
+        selection.splice(found, 1);
+    else
+        selection.push(images[String(id)]);
     $('ul.image-selector > li[title="'+id+'"]').toggleClass('selected');
+}
+
+// set visual message
+function set_messsage(msg, type) {
+    $('div.messages-section ul').empty();
+    $('div.messages-section ul').append('<li class="'+type+'">'+msg+'</li>');
+    $('div.messages-section').show();
+}
+
+// clear and hide visual messages
+function hide_messages() {
+    $('div.messages-section ul').empty();
+    $('div.messages-section').hide();
+}
+
+// de/activate loading message
+function set_loading(loading) {
+    if (!loading) {
+        hide_messages();
+    } else {
+        set_messsage(tr_map['Loading...'], 'info');
+    }
+}
+
+// load categories for current selected site
+function refresh_site() {
+    set_loading(true); 
+    images = new Array();
+    selection = new Array();
+    cats = new Array();
+
+    $('div.images-section').hide();
+    $('div.style-section').hide();
+    $('div.confirmation-section').hide();
+
+    $('div.page-selection ol').empty();
+    site_idx=$('select[name="site"]').val();
+    $.ajax({
+        url: 'query_remote_pwg.php',
+        dataType: 'json',
+        data: {"__url__": site_idx, "format": "json", "method": "pwg.categories.getList", "recursive": true, "page": 0, "per_page": 200},
+        success: function(data, textStatus) {
+            if ((data == undefined) || data["stat"] != "ok") {
+                set_messsage(tr_map["Error while reading from"]+" "+sites[site_idx] + ". " +
+                tr_map["Please verify PiwigoMedia\'s configuration and try again."], 'error');
+                return;
+            }
+            cats = new Array();
+            $.each(data["result"]["categories"], function(idx, el) {
+                cats[String(el["id"])] = el;
+            });
+
+            $('select[name="category"]').empty();
+            $.each(data["result"]["categories"], function(idx, el) {
+                uppercats = el["uppercats"].split(",");
+                uppercats_names = new Array();
+                $.each(uppercats, function(idx, n) {
+                    uppercats_names.push(cats[String(n)]["name"]);
+                });
+                cat_name = uppercats_names.join("/");
+                $('select[name="category"]').append("<option value='"+el["id"]+"'>"+cat_name+"</option>");
+            });
+
+            $('ul.image-selector').empty();
+            selection = new Array();
+            set_loading(false);
+        }
+    });
+}
+
+// load images for current selected category
+function refresh_category() {
+    set_loading(true);
+    cat_idx=$('select[name="category"]').val();
+    if (this_cat != cat_idx)
+        selection = new Array();
+    $.ajax({
+        url: 'query_remote_pwg.php',
+        dataType: 'json',
+        data: {"__url__": site_idx, "format": "json", "method": "pwg.categories.getImages", "cat_id": cat_idx, "page": this_page, "per_page": per_page},
+        success: function(data) {
+            if ((data == undefined) || data["stat"] != "ok") {
+                set_messsage(tr_map["Error reading image information, please try again."], 'error');
+                return;
+            }
+
+            $('div.page-selection ol').empty();
+            if (images.length > 0) {
+                pages = Math.ceil(cats[String(cat_idx)]["total_nb_images"]/per_page);
+                for (i=0; i<pages; i++) {
+                    li = $('<li><span onclick="this_page='+i+'; refresh_category();">'+(i+1)+'</span></li>');
+                    if (i == this_page) li.addClass('selected');
+                    if (i+1 == pages) li.addClass('last');
+                    $('div.page-selection ol').append(li);
+                }
+            }
+
+            $('ul.image-selector').empty();
+            $.each(data["result"]["images"]["_content"], function(idx, el) {
+                images[String(el["id"])] = el;
+                $('ul.image-selector').append(
+                    '<li title="'+el.id+'">'+
+                        '<img src="'+get_image_thumb(el)+'" '+
+                        'onclick="toggle_selection(\''+el.id+'\');" />'+
+                    '</li>'
+                );
+            });
+
+            $.each(selection, function(idx, el) {
+                $('ul.image-selector > li[title="'+el.id+'"]').toggleClass('selected');
+            });
+            this_cat = cat_idx;
+            
+            if (images.length > 0) {
+                $('div.images-section').show();
+                $('div.style-section').show();
+                $('div.confirmation-section').show();
+            }
+            set_loading(false);
+        }
+	});
 };
 
-// execute mceInsertContent for an image object 
+// insert an image into the WP post
 function insert_image_obj(img) {
     align = $('div.style-section > fieldset > '+
         'input[name="alignment"]:checked').val();
@@ -62,8 +177,8 @@ function insert_image_obj(img) {
     else
         imurl_ = get_image_thumb(img);
 
-    window.parent.tinyMCE.execCommand('mceInsertContent', 
-        false, 
+    window.parent.tinyMCE.execCommand('mceInsertContent',
+        false,
         '<a href="'+url_+'" target="'+target_+'" '+
         'class="piwigomedia-single-image">'+
             '<img src="'+imurl_+'" class="'+align+'" />'+
@@ -71,64 +186,9 @@ function insert_image_obj(img) {
     );
 };
 
-// execute mceInsertContent for an image object (using id)
-function insert_image(id) {
-    img = get_image(id);
-    if (img == null)
-        return false;
-    insert_image_obj(img);
-};
-
-// execute mceInsertContent for every selected image ('selected' variable)
+// insert all selected images into the WP post
 function insert_selected() {
-    $('ul.image-selector > li.selected').each(function(index, obj) {
-        insert_image_obj(get_image(obj["title"]));
+    $.each(selection, function(idx, el) {
+        insert_image_obj(el);
     });
-
-};
-
-
-// get category by id
-function get_category(id) {
-    cat = null;
-    $(categories).each(function(index, obj) {
-        if (obj.id == id) {
-            cat = obj;
-            return false;
-        }
-    });
-    return cat;
-};
-
-// execute mceInsertContent for a category object (using id)
-function insert_category(id) {
-    cat = get_category(id);
-    if (cat == null)
-        return false;
-
-    window.parent.tinyMCE.execCommand('mceInsertContent', 
-        false, 
-        '<a class="piwigomedia-gallery-link" href="'+cat.url+'">'+
-            cat.name+'</a>'
-    );
-};
-
-$(document).ready(function() {
-    $('div.close-button > input').each(function(index, obj) {
-        $(obj).click(function() {
-            tinyMCEPopup.close();
-        });
-    });
-
-    $(images._content).each(function(index, obj) {
-        $('ul.image-selector').append(
-            '<li title="'+obj.id+'">'+
-                '<img src="'+get_image_thumb(obj)+'" '+
-                'onclick="toggle_image_selection(\''+obj.id+'\');" />'+
-            '</li>'
-        );
-    });
-
-
-});
-
+}

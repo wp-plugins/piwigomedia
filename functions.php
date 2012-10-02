@@ -42,25 +42,4 @@ function curl_get($url, array $get = NULL, array $options = array())
     return $result;
 }
 
-function pwm_build_link($cat_id=null, $cat_page=null, $site=null) {
-    $args = array();
-    if (!is_null($cat_id))
-        $args[] = 'category='.$cat_id;
-    if (!is_null($cat_page))
-        $args[] = 'cat_page='.$cat_page;
-    if (!is_null($site))
-        $args[] = 'site='.$site;
-    return $_SERVER['PHP_SELF'].'?'.implode('&amp;', $args);
-}
-
-
-function pwm_get_category($categories, $cat_id) {
-    foreach($categories as $cat) {
-        if ($cat->id == $cat_id) {
-            return $cat;
-        }
-    }
-    return null;
-}
-
 ?>

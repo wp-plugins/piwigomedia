@@ -1,10 +1,10 @@
-# Copyright (C) 2012 PiwigoMedia
-# This file is distributed under the same license as the PiwigoMedia package.
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
 msgid ""
 msgstr ""
-"Project-Id-Version: PiwigoMedia 0.9.8.1\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/piwigomedia\n"
-"POT-Creation-Date: 2012-02-15 11:46:25+00:00\n"
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://b.joaoubaldo.com/my-projects/piwigomedia\n"
+"POT-Creation-Date: 2012-10-02 11:19:02+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -49,127 +49,110 @@ msgstr ""
 msgid "Save changes"
 msgstr ""
 
-#: popup.php:47
+#: popup.php:33
 msgid "PiwigoMedia must be configured."
 msgstr ""
 
-#: popup.php:48
+#: popup.php:37
 msgid "Error while reading from"
 msgstr ""
 
-#: popup.php:50
+#: popup.php:38
 msgid "Please verify PiwigoMedia's configuration and try again."
 msgstr ""
 
-#: popup.php:51
+#: popup.php:39
 msgid "Error reading image information, please try again."
 msgstr ""
 
-#: popup.php:167
+#: popup.php:40
+msgid "Loading..."
+msgstr ""
+
+#: popup.php:80
 msgid "Choose a site"
 msgstr ""
 
-#: popup.php:170
+#: popup.php:83
 msgid "Piwigo site:"
 msgstr ""
 
-#: popup.php:181 popup.php:198
+#: popup.php:91 popup.php:99
 msgid "Select"
 msgstr ""
 
-#: popup.php:184
+#: popup.php:95
 msgid "Select a category"
 msgstr ""
 
-#: popup.php:190
+#: popup.php:98
 msgid "Category:"
 msgstr ""
 
-#: popup.php:208
+#: popup.php:106
 msgid "Select the images"
 msgstr ""
 
-#: popup.php:254
+#: popup.php:118
 msgid "Customize"
 msgstr ""
 
-#: popup.php:256
+#: popup.php:120
 msgid "Insert:"
 msgstr ""
 
-#: popup.php:257
+#: popup.php:121
 msgid "Thumbnail"
 msgstr ""
 
-#: popup.php:258 popup.php:270
+#: popup.php:122 popup.php:134
 msgid "Fullsize image"
 msgstr ""
 
-#: popup.php:261
+#: popup.php:125
 msgid "Alignment:"
 msgstr ""
 
-#: popup.php:262
+#: popup.php:126
 msgid "None"
 msgstr ""
 
-#: popup.php:263
+#: popup.php:127
 msgid "Left"
 msgstr ""
 
-#: popup.php:264
+#: popup.php:128
 msgid "Center"
 msgstr ""
 
-#: popup.php:265
+#: popup.php:129
 msgid "Right"
 msgstr ""
 
-#: popup.php:268
+#: popup.php:132
 msgid "Link to:"
 msgstr ""
 
-#: popup.php:269
+#: popup.php:133
 msgid "Image page"
 msgstr ""
 
-#: popup.php:273
+#: popup.php:137
 msgid "Link target:"
 msgstr ""
 
-#: popup.php:274
+#: popup.php:138
 msgid "New window"
 msgstr ""
 
-#: popup.php:275
+#: popup.php:139
 msgid "Same window"
 msgstr ""
 
-#: popup.php:281
+#: popup.php:145
 msgid "Insert into post"
 msgstr ""
 
-#: popup.php:287
+#: popup.php:150
 msgid "author website"
-msgstr ""
-
-#. Plugin Name of the plugin/theme
-msgid "PiwigoMedia"
-msgstr ""
-
-#. #-#-#-#-#  piwigomedia.pot (PiwigoMedia 0.9.8.1)  #-#-#-#-#
-#. Plugin URI of the plugin/theme
-#. #-#-#-#-#  piwigomedia.pot (PiwigoMedia 0.9.8.1)  #-#-#-#-#
-#. Author URI of the plugin/theme
-msgid "http://joaoubaldo.com"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid ""
-"This plugins allows media from a Piwigo site to be inserted into WordPress "
-"posts."
-msgstr ""
-
-#. Author of the plugin/theme
-msgid "João C."
 msgstr ""
