@@ -1,5 +1,5 @@
 <?php
-function curl_post($url, array $post = NULL, array $options = array())
+function pwm_curl_post($url, array $post = NULL, array $options = array())
 {
     $defaults = array(
         CURLOPT_POST => 1,
@@ -22,11 +22,11 @@ function curl_post($url, array $post = NULL, array $options = array())
     return $result;
 }
 
-function curl_get($url, array $get = NULL, array $options = array())
+function pwm_curl_get($url, array $get = NULL, array $options = array())
 {
     $defaults = array(
         CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). 
-            http_build_query($get),
+            http_build_query($get, '', '&'),
         CURLOPT_HEADER => 0,
         CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_TIMEOUT => 4

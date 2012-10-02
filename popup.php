@@ -3,19 +3,10 @@
 
     // Verify post id
     $error = null;
-    $post_id = $_GET['post_id'];
-    if ($post_id == null)
-        die('missing post id');
 
     // Check permissions
-    $post_type = get_post_type($post_id);
-    if ($post_type != 'page' && $post_type != 'post')
-        die('invalid post type');
-    if ( $post_type == 'page' && !current_user_can('edit_pages'))
+    if (get_current_user_id() == 0)
         die('no access');
-    if ( $post_type == 'post' && !current_user_can('edit_posts'))
-        die('no access');
-
 
     $sites = array();
     foreach (explode("\n", get_option('piwigomedia_piwigo_urls', '')) as $u) {

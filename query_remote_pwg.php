@@ -2,7 +2,8 @@
     require_once('../../../wp-load.php');
     require_once('functions.php');
 
-    if ( !current_user_can('edit_pages') && !current_user_can('edit_posts'))
+    // Check permissions
+    if (get_current_user_id() == 0)
         die('no access');
 
     if ($_GET['__url__'] == '')
@@ -32,6 +33,6 @@
             continue;
         $params[$k] = $v;
     }
-    $res = curl_get($site."/ws.php", $params);
+    $res = pwm_curl_get($site."/ws.php", $params);
     echo $res;
 ?>
