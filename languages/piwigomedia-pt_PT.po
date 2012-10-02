@@ -64,6 +64,9 @@ msgstr "Por favor verifique as configurações do PiwigoMedia e tente novamente.
 msgid "Error reading image information, please try again."
 msgstr "Erro ao ler informação das imagens, por favor tente novamente."
 
+msgid "Loading..."
+msgstr "A carregar..."
+
 #: popup.php:154
 msgid "Choose a site"
 msgstr "Escolha um site"

@@ -1,5 +1,5 @@
 <?php
-function curl_post($url, array $post = NULL, array $options = array())
+function pwm_curl_post($url, array $post = NULL, array $options = array())
 {
     $defaults = array(
         CURLOPT_POST => 1,
@@ -22,11 +22,11 @@ function curl_post($url, array $post = NULL, array $options = array())
     return $result;
 }
 
-function curl_get($url, array $get = NULL, array $options = array())
+function pwm_curl_get($url, array $get = NULL, array $options = array())
 {
     $defaults = array(
         CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). 
-            http_build_query($get),
+            http_build_query($get, '', '&'),
         CURLOPT_HEADER => 0,
         CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_TIMEOUT => 4
@@ -40,27 +40,6 @@ function curl_get($url, array $get = NULL, array $options = array())
     }
     curl_close($ch);
     return $result;
-}
-
-function pwm_build_link($cat_id=null, $cat_page=null, $site=null) {
-    $args = array();
-    if (!is_null($cat_id))
-        $args[] = 'category='.$cat_id;
-    if (!is_null($cat_page))
-        $args[] = 'cat_page='.$cat_page;
-    if (!is_null($site))
-        $args[] = 'site='.$site;
-    return $_SERVER['PHP_SELF'].'?'.implode('&amp;', $args);
-}
-
-
-function pwm_get_category($categories, $cat_id) {
-    foreach($categories as $cat) {
-        if ($cat->id == $cat_id) {
-            return $cat;
-        }
-    }
-    return null;
 }
 
 ?>

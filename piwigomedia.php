@@ -3,7 +3,7 @@
 Plugin Name: PiwigoMedia
 Plugin URI: http://joaoubaldo.com
 Description: This plugins allows media from a Piwigo site to be inserted into WordPress posts.
-Version: 0.9.9
+Version: 1.0.1
 Author: João C.
 Author URI: http://joaoubaldo.com
 License: GPL2 (see attached LICENSE file)
@@ -30,9 +30,6 @@ function register_piwigomedia_plugin() {
     load_plugin_textdomain('piwigomedia', null, 'piwigomedia/languages/');
     add_filter('mce_buttons', 'register_piwigomedia_tinymce_button');
     add_filter('mce_external_plugins', 'register_piwigomedia_tinymce_plugin');
-    #add_action('wp_head', 'load_piwigomedia_headers');
-    #add_action('admin_head', 'load_piwigomedia_headers');
-
 }
 
 function load_piwigomedia_headers() {
