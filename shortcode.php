@@ -2,9 +2,9 @@
 
 require_once("functions.php");
 
-function pwg_category( $atts ) {
+function pwg_gallery( $atts ) {
         extract( shortcode_atts( array(
-                'site'=>NULL, 'id'=>NULL, 'images'=>10, 'page'=>0
+                'site'=>NULL, 'id'=>NULL, 'images'=>10, 'page'=>0, 'height'=>400
         ), $atts ) );
 
 	$params = array(
@@ -19,14 +19,42 @@ function pwg_category( $atts ) {
 		return;
 	$out = "";
 	if ($res->result->images->count > 0) {
-		$out .= "<ul class=\"piwigomedia-category-preview\">";
+		$out .= "<div id=\"piwigomedia-gallery-$id\" style=\"height: ".$height."px;\">";
 		foreach($res->result->images->_content as $img) {
-			$out .= "<li><a class=\"piwigomedia-single-image\" href=\"".$img->element_url."\"><img src=\"".$img->derivatives->thumb->url."\"></a></li>";
+			$out .= "<a href=\"".$img->element_url."\"><img src=\"".$img->derivatives->thumb->url."\"></a>";
 		}
-		$out .= "</ul>";
+		$out .= "</div>";
 	}
+        return "$out <script>Galleria.loadTheme('wp-content/plugins/piwigomedia/js/galleria/themes/classic/galleria.classic.min.js');Galleria.run('#piwigomedia-gallery-$id');</script>";
+}
+
+
+function pwg_category( $atts ) {
+        extract( shortcode_atts( array(
+                'site'=>NULL, 'id'=>NULL, 'images'=>10, 'page'=>0
+        ), $atts ) );
+
+        $params = array(
+                "format" => "json",
+                "method" => "pwg.categories.getImages",
+                "cat_id" => $id,
+                "page" => $page,
+                "per_page" => $images);
+        $res = pwm_curl_get($site."/ws.php", $params);
+        $res = json_decode($res);
+        if ($res->stat != "ok")
+                return;
+        $out = "";
+        if ($res->result->images->count > 0) {
+                $out .= "<ul class=\"piwigomedia-category-preview\">";
+                foreach($res->result->images->_content as $img) {
+                        $out .= "<li><a class=\"piwigomedia-single-image\" href=\"".$img->element_url."\"><img src=\"".$img->derivatives->thumb->url."\"></a></li>";
+                }
+                $out .= "</ul>";
+        }
         return "$out";
 }
+
 
 
 function pwg_image( $atts ) {
