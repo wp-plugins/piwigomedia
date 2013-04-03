@@ -9,7 +9,9 @@ function pwm_curl_post($url, array $post = NULL, array $options = array())
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_FORBID_REUSE => 1,
         CURLOPT_TIMEOUT => 4,
-        CURLOPT_POSTFIELDS => http_build_query($post)
+        CURLOPT_POSTFIELDS => http_build_query($post),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false
     );
 
     $ch = curl_init();
@@ -29,7 +31,9 @@ function pwm_curl_get($url, array $get = NULL, array $options = array())
             http_build_query($get, '', '&'),
         CURLOPT_HEADER => 0,
         CURLOPT_RETURNTRANSFER => TRUE,
-        CURLOPT_TIMEOUT => 4
+        CURLOPT_TIMEOUT => 4,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false
     );
 
     $ch = curl_init();
