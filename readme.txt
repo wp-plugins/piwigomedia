@@ -4,7 +4,7 @@ Donate link: http://joaoubaldo.com
 Tags: gallery, piwigo, integration, media
 Requires at least: 3.0.1
 Tested up to: 3.3.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 
 This plugins allows media from a Piwigo site to be inserted into WordPress posts.
 
@@ -64,6 +64,11 @@ Only Firefox 14 and Chrome 23 were tested but there should be compatibility for 
 1. PiwigoMedia's main window
 
 == Changelog ==
+= 1.1.2 =
+* update: Fixed full image urls. 
+* update: Disabled PiwigoMedia's Widget as it was causing issues on some installations.
+* update: pwg-gallery shortcode now has links to xxlarge image and image name is displayed in info box.
+
 = 1.1.1 =
 * new: pwg-gallery shortcode. This shortcode uses Galleria JS library (http://galleria.io/) to display Piwigo categories as inline galleries.
 * update: curl requests are now configured to bypass peer verification. This solves the problem with self-signed certificates.

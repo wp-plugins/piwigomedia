@@ -21,7 +21,7 @@ function pwg_gallery( $atts ) {
 	if ($res->result->images->count > 0) {
 		$out .= "<div id=\"piwigomedia-gallery-$id\" style=\"height: ".$height."px;\">";
 		foreach($res->result->images->_content as $img) {
-			$out .= "<a href=\"".$img->element_url."\"><img src=\"".$img->derivatives->thumb->url."\"></a>";
+			$out .= "<a href=\"".$img->derivatives->xxlarge->url."\"><img src=\"".$img->derivatives->thumb->url."\" data-title=\"".$img->name."\" data-link=\"".$img->derivatives->xxlarge->url."\"></a>";
 		}
 		$out .= "</div>";
 	}
@@ -48,7 +48,7 @@ function pwg_category( $atts ) {
         if ($res->result->images->count > 0) {
                 $out .= "<ul class=\"piwigomedia-category-preview\">";
                 foreach($res->result->images->_content as $img) {
-                        $out .= "<li><a class=\"piwigomedia-single-image\" href=\"".$img->element_url."\"><img src=\"".$img->derivatives->thumb->url."\"></a></li>";
+                        $out .= "<li><a class=\"piwigomedia-single-image\" href=\"".$img->derivatives->xxlarge->url."\"><img src=\"".$img->derivatives->thumb->url."\"></a></li>";
                 }
                 $out .= "</ul>";
         }
@@ -71,7 +71,7 @@ function pwg_image( $atts ) {
         $res = json_decode($res);
         if ($res->stat != "ok")
                 return;
-        $out = "<a class=\"piwigomedia-single-image\" href=\"".$res->result->element_url."\"><img src=\"".$res->result->derivatives->thumb->url."\"></a>";
+        $out = "<a class=\"piwigomedia-single-image\" href=\"".$res->result->derivatives->xxlarge->url."\"><img src=\"".$res->result->derivatives->thumb->url."\"></a>";
         return "$out";
 }
 

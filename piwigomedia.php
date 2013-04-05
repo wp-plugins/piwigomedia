@@ -3,14 +3,14 @@
 Plugin Name: PiwigoMedia
 Plugin URI: http://joaoubaldo.com
 Description: This plugins allows media from a Piwigo site to be inserted into WordPress posts.
-Version: 1.1.1
+Version: 1.1.2
 Author: João C.
 Author URI: http://joaoubaldo.com
 License: GPL2 (see attached LICENSE file)
 */
 
 require_once("shortcode.php");
-require_once("widget.php");
+//require_once("widget.php");
 
 
 function register_piwigomedia_tinymce_button($buttons) {
@@ -39,9 +39,9 @@ function register_piwigomedia_plugin() {
     add_shortcode('pwg-category', 'pwg_category');
     add_shortcode('pwg-gallery', 'pwg_gallery');
 
-    wp_register_sidebar_widget("piwigomedia-images", "Piwigo Images", "piwigomedia_widget", 
-	array("description" => __("Display Piwigo media on a sidebar widget", "piwigomedia"),
-	"site" => "s", "category" => "cate")); 
+    //wp_register_sidebar_widget("piwigomedia-images", "Piwigo Images", "piwigomedia_widget", 
+    //array("description" => __("Display Piwigo media on a sidebar widget", "piwigomedia"),
+    //"site" => "s", "category" => "cate")); 
 }
 
 function load_piwigomedia_headers() {
@@ -52,7 +52,7 @@ function load_piwigomedia_headers() {
 }
 
 add_action('init', 'register_piwigomedia_plugin');
-add_action('widgets_init', function() { return register_widget( "PiwigoMediaWidget" ); });
+//add_action('widgets_init', function() { return register_widget( "PiwigoMediaWidget" ); });
 add_action('wp_enqueue_scripts', 'load_piwigomedia_headers');  
 
 require_once('piwigomedia_admin.php');

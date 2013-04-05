@@ -166,14 +166,14 @@ function insert_image_obj(img) {
     url_ = $('div.style-section > fieldset > '+
         'input[name="url"]:checked').val();
     if (url_ == 'fullsize')
-        url_ = img.element_url; // fullsize image
+        url_ = img.derivatives.xxlarge.url; // fullsize image
     else
         url_ = img.categories[0].page_url; // image page
 
     imurl_ = $('div.style-section > fieldset > '+
         'input[name="whatinsert"]:checked').val();
     if (imurl_ == 'fullsize')
-        imurl_ = img.element_url;
+        imurl_ = img.derivatives.xxlarge.url;
     else
         imurl_ = get_image_thumb(img);
 
