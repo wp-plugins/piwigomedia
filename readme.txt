@@ -4,7 +4,7 @@ Donate link: http://joaoubaldo.com
 Tags: gallery, piwigo, integration, media
 Requires at least: 3.0.1
 Tested up to: 3.3.1
-Stable tag: 1.0.1
+Stable tag: 1.1.2
 
 This plugins allows media from a Piwigo site to be inserted into WordPress posts.
 
@@ -30,6 +30,17 @@ The main advantages of PiwigoMedia are:
 
 == Frequently Asked Questions ==
 
+= How to use shortcodes? =
+
+pwg-image - display a single image:
+[pwg-image site="http://..." id="IMAGE_ID"]
+
+pwg-category - display any number of images from a category:
+[pwg-category site="http://..." id="CATEGORY_ID" images="NUMBER_OF_IMAGES_TO_DISPLAY" page="PAGE_INDEX"]
+
+pwg-gallery - display Piwigo categories as inline galleries:
+[pwg-gallery site="http://..." id="CATEGORY_ID" images="NUMBER_OF_IMAGES_TO_DISPLAY" page="PAGE_INDEX" height="GALLERY_HEIGHT"]
+
 = How do I add images to a post? =
 
 1. Go to WordPress Post editor.
@@ -38,19 +49,34 @@ The main advantages of PiwigoMedia are:
 4. Make your image selection.
 5. Insert image selection into the post.
 
+or use shortcodes.
+
 = Which versions of Piwigo are supported? =
 
 The latest tested Piwigo version is 2.4.3.
 
 = Which browsers are supported? =
 
-Only Firefox 14 and Chrome 21 were tested but there should be compatibility for browsers that support jQuery.
+Only Firefox 14 and Chrome 23 were tested but there should be compatibility for browsers that support jQuery.
 
 == Screenshots ==
 
 1. PiwigoMedia's main window
 
 == Changelog ==
+= 1.1.2 =
+* update: Fixed full image urls. 
+* update: Disabled PiwigoMedia's Widget as it was causing issues on some installations.
+* update: pwg-gallery shortcode now has links to xxlarge image and image name is displayed in info box.
+
+= 1.1.1 =
+* new: pwg-gallery shortcode. This shortcode uses Galleria JS library (http://galleria.io/) to display Piwigo categories as inline galleries.
+* update: curl requests are now configured to bypass peer verification. This solves the problem with self-signed certificates.
+
+= 1.1.0 =
+* new: WP shortcodes are now available: pwg-image and pwg-category.
+* new: PiwigoMedia Widget. Display Piwigo images inside a widget. This is an EXPERIMENTAL feature and it's very basic at the moment.
+
 = 1.0.1 =
 * update: fix to pwm_curl_get(). Some users were experiencing problems with the query built inside this function.
 * update: permission check now relies on the user being logged on.
