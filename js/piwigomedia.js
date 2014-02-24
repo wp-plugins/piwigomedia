@@ -45,6 +45,16 @@ function set_loading(loading) {
     }
 }
 
+function hide_options(clear_selection, clear_categories) {
+    $('div.images-section').hide();
+    $('div.style-section').hide();
+    $('div.confirmation-section').hide();
+    if (clear_selection)
+        $('div.page-selection ol').empty();
+    if (clear_categories)
+        $('select[name="category"]').empty();
+}
+
 // load categories for current selected site
 function refresh_site() {
     set_loading(true); 
@@ -52,11 +62,8 @@ function refresh_site() {
     selection = new Array();
     cats = new Array();
 
-    $('div.images-section').hide();
-    $('div.style-section').hide();
-    $('div.confirmation-section').hide();
+    hide_options(true,true);
 
-    $('div.page-selection ol').empty();
     site_idx=$('select[name="site"]').val();
     $.ajax({
         url: 'query_remote_pwg.php',
@@ -87,12 +94,19 @@ function refresh_site() {
             $('ul.image-selector').empty();
             selection = new Array();
             set_loading(false);
+        },
+        error: function(jqXHR, textStatus, errorThrown ) {
+            hide_messages();
+            set_messsage(textStatus, 'error');
         }
     });
 }
 
 // load images for current selected category
 function refresh_category() {
+    images = new Array();
+    hide_options(false,false);
+
     set_loading(true);
     cat_idx=$('select[name="category"]').val();
     if (this_cat != cat_idx)
@@ -107,6 +121,21 @@ function refresh_category() {
                 return;
             }
 
+            $('ul.image-selector').empty();
+            if (data["result"]["images"]["_content"] == undefined)
+                images_ = data["result"]["images"];
+            else
+                images_ = data["result"]["images"]["_content"];
+            $.each(images_, function(idx, el) {
+                images[String(el["id"])] = el;
+                $('ul.image-selector').append(
+                    '<li title="'+el.id+'">'+
+                        '<img src="'+get_image_thumb(el)+'" '+
+                        'onclick="toggle_selection(\''+el.id+'\');" />'+
+                    '</li>'
+                );
+            });
+
             $('div.page-selection ol').empty();
             if (images.length > 0) {
                 pages = Math.ceil(cats[String(cat_idx)]["total_nb_images"]/per_page);
@@ -118,16 +147,6 @@ function refresh_category() {
                 }
             }
 
-            $('ul.image-selector').empty();
-            $.each(data["result"]["images"]["_content"], function(idx, el) {
-                images[String(el["id"])] = el;
-                $('ul.image-selector').append(
-                    '<li title="'+el.id+'">'+
-                        '<img src="'+get_image_thumb(el)+'" '+
-                        'onclick="toggle_selection(\''+el.id+'\');" />'+
-                    '</li>'
-                );
-            });
 
             $.each(selection, function(idx, el) {
                 $('ul.image-selector > li[title="'+el.id+'"]').toggleClass('selected');

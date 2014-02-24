@@ -3,8 +3,8 @@ Contributors: johnnyfive
 Donate link: http://joaoubaldo.com
 Tags: gallery, piwigo, integration, media
 Requires at least: 3.0.1
-Tested up to: 3.3.1
-Stable tag: 1.1.2
+Tested up to: 3.4.2
+Stable tag: 1.1.3
 
 This plugins allows media from a Piwigo site to be inserted into WordPress posts.
 
@@ -53,17 +53,22 @@ or use shortcodes.
 
 = Which versions of Piwigo are supported? =
 
-The latest tested Piwigo version is 2.4.3.
+The latest tested Piwigo version is 2.6.1.
 
 = Which browsers are supported? =
 
-Only Firefox 14 and Chrome 23 were tested but there should be compatibility for browsers that support jQuery.
+Only Firefox and Chrome were tested but there should be compatibility for browsers that support jQuery.
 
 == Screenshots ==
 
 1. PiwigoMedia's main window
 
 == Changelog ==
+= 1.1.3 =
+* update: added Piwigo 2.6.1 compatibility.
+* update: UI bugs fixed.
+* update: more feedback messages when something goes wrong.
+
 = 1.1.2 =
 * update: Fixed full image urls. 
 * update: Disabled PiwigoMedia's Widget as it was causing issues on some installations.
