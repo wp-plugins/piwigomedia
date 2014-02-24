@@ -3,7 +3,7 @@
 Plugin Name: PiwigoMedia
 Plugin URI: http://joaoubaldo.com
 Description: This plugins allows media from a Piwigo site to be inserted into WordPress posts.
-Version: 1.1.2
+Version: 1.1.3
 Author: João C.
 Author URI: http://joaoubaldo.com
 License: GPL2 (see attached LICENSE file)
