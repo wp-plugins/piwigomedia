@@ -1,3 +1,31 @@
+function debug_log() {
+console.log("sites:");
+console.log(sites);
+console.log("per page:");
+console.log(per_page);
+
+console.log("tr map:");
+console.log(tr_map);
+
+console.log("this_page:");
+console.log(this_page);
+
+console.log("site idx:");
+console.log(site_idx);
+
+console.log("this_cat:");
+console.log(this_cat);
+
+console.log("cats:");
+console.log(cats);
+
+console.log("selection:");
+console.log(selection);
+
+console.log("images:");
+console.log(images);
+}
+
 // get image thumbnail url
 function get_image_thumb(img) {
     if (img.derivatives == undefined)
@@ -109,8 +137,10 @@ function refresh_category() {
 
     set_loading(true);
     cat_idx=$('select[name="category"]').val();
-    if (this_cat != cat_idx)
+    if (this_cat != cat_idx) {
         selection = new Array();
+        this_page = 0;
+    }
     $.ajax({
         url: 'query_remote_pwg.php',
         dataType: 'json',
@@ -138,7 +168,7 @@ function refresh_category() {
 
             $('div.page-selection ol').empty();
             if (images.length > 0) {
-                pages = Math.ceil(cats[String(cat_idx)]["total_nb_images"]/per_page);
+                pages = Math.ceil(cats[String(cat_idx)]["nb_images"]/per_page);
                 for (i=0; i<pages; i++) {
                     li = $('<li><span onclick="this_page='+i+'; refresh_category();">'+(i+1)+'</span></li>');
                     if (i == this_page) li.addClass('selected');
