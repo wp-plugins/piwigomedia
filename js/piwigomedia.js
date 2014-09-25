@@ -1,243 +1,313 @@
-function debug_log() {
-console.log("sites:");
-console.log(sites);
-console.log("per page:");
-console.log(per_page);
+/*
+PiwigoMedia Wordpress plugin
+Copyright (C) 2014  Joao Coutinho
 
-console.log("tr map:");
-console.log(tr_map);
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-console.log("this_page:");
-console.log(this_page);
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-console.log("site idx:");
-console.log(site_idx);
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+var app = angular.module("PiwigoMediaApp", []);
 
-console.log("this_cat:");
-console.log(this_cat);
-
-console.log("cats:");
-console.log(cats);
-
-console.log("selection:");
-console.log(selection);
-
-console.log("images:");
-console.log(images);
-}
-
-// get image thumbnail url
-function get_image_thumb(img) {
-    if (img.derivatives == undefined)
-        img_src = img.tn_url;
-    else
-        img_src = img.derivatives.thumb.url;
-    return img_src;
-}
-
-// toggle visual selection
-function toggle_selection(id) {
-    found = -1;
-    $.each(selection, function(idx, el) {
-        if (el.id == id) {
-            found = idx;
-            return false;
+app.filter('splitEvery', function() {
+    var cache = {};
+    var filter = function(arr, size) {
+        if (!arr) { 
+            return; 
         }
-    });
-    if (found >= 0)
-        selection.splice(found, 1);
-    else
-        selection.push(images[String(id)]);
-    $('ul.image-selector > li[title="'+id+'"]').toggleClass('selected');
-}
-
-// set visual message
-function set_messsage(msg, type) {
-    $('div.messages-section ul').empty();
-    $('div.messages-section ul').append('<li class="'+type+'">'+msg+'</li>');
-    $('div.messages-section').show();
-}
-
-// clear and hide visual messages
-function hide_messages() {
-    $('div.messages-section ul').empty();
-    $('div.messages-section').hide();
-}
-
-// de/activate loading message
-function set_loading(loading) {
-    if (!loading) {
-        hide_messages();
-    } else {
-        set_messsage(tr_map['Loading...'], 'info');
-    }
-}
-
-function hide_options(clear_selection, clear_categories) {
-    $('div.images-section').hide();
-    $('div.style-section').hide();
-    $('div.confirmation-section').hide();
-    if (clear_selection)
-        $('div.page-selection ol').empty();
-    if (clear_categories)
-        $('select[name="category"]').empty();
-}
-
-// load categories for current selected site
-function refresh_site() {
-    set_loading(true); 
-    images = new Array();
-    selection = new Array();
-    cats = new Array();
-
-    hide_options(true,true);
-
-    site_idx=$('select[name="site"]').val();
-    $.ajax({
-        url: 'query_remote_pwg.php',
-        dataType: 'json',
-        data: {"__url__": site_idx, "format": "json", "method": "pwg.categories.getList", "recursive": true, "page": 0, "per_page": 200},
-        success: function(data, textStatus) {
-            if ((data == undefined) || data["stat"] != "ok") {
-                set_messsage(tr_map["Error while reading from"]+" "+sites[site_idx] + ". " +
-                tr_map["Please verify PiwigoMedia\'s configuration and try again."], 'error');
-                return;
-            }
-            cats = new Array();
-            $.each(data["result"]["categories"], function(idx, el) {
-                cats[String(el["id"])] = el;
-            });
-
-            $('select[name="category"]').empty();
-            $.each(data["result"]["categories"], function(idx, el) {
-                uppercats = el["uppercats"].split(",");
-                uppercats_names = new Array();
-                $.each(uppercats, function(idx, n) {
-                    uppercats_names.push(cats[String(n)]["name"]);
-                });
-                cat_name = uppercats_names.join("/");
-                $('select[name="category"]').append("<option value='"+el["id"]+"'>"+cat_name+"</option>");
-            });
-
-            $('ul.image-selector').empty();
-            selection = new Array();
-            set_loading(false);
-        },
-        error: function(jqXHR, textStatus, errorThrown ) {
-            hide_messages();
-            set_messsage(textStatus, 'error');
+        var newArr = [];
+        for (var i=0; i<arr.length; i+=size) {
+            newArr.push(arr.slice(i, i+size));
         }
-    });
-}
-
-// load images for current selected category
-function refresh_category() {
-    images = new Array();
-    hide_options(false,false);
-
-    set_loading(true);
-    cat_idx=$('select[name="category"]').val();
-    if (this_cat != cat_idx) {
-        selection = new Array();
-        this_page = 0;
-    }
-    $.ajax({
-        url: 'query_remote_pwg.php',
-        dataType: 'json',
-        data: {"__url__": site_idx, "format": "json", "method": "pwg.categories.getImages", "cat_id": cat_idx, "page": this_page, "per_page": per_page},
-        success: function(data) {
-            if ((data == undefined) || data["stat"] != "ok") {
-                set_messsage(tr_map["Error reading image information, please try again."], 'error');
-                return;
-            }
-
-            $('ul.image-selector').empty();
-            if (data["result"]["images"]["_content"] == undefined)
-                images_ = data["result"]["images"];
-            else
-                images_ = data["result"]["images"]["_content"];
-            $.each(images_, function(idx, el) {
-                images[String(el["id"])] = el;
-                $('ul.image-selector').append(
-                    '<li title="'+el.id+'">'+
-                        '<img src="'+get_image_thumb(el)+'" '+
-                        'onclick="toggle_selection(\''+el.id+'\');" />'+
-                    '</li>'
-                );
-            });
-
-            $('div.page-selection ol').empty();
-            if (images.length > 0) {
-                pages = Math.ceil(cats[String(cat_idx)]["nb_images"]/per_page);
-                for (i=0; i<pages; i++) {
-                    li = $('<li><span onclick="this_page='+i+'; refresh_category();">'+(i+1)+'</span></li>');
-                    if (i == this_page) li.addClass('selected');
-                    if (i+1 == pages) li.addClass('last');
-                    $('div.page-selection ol').append(li);
-                }
-            }
+        var arrString = JSON.stringify(arr);
+        var fromCache = cache[arrString+size];
+        if (JSON.stringify(fromCache) === JSON.stringify(newArr)) {
+            return fromCache;
+        }
+        cache[arrString+size] = newArr;
+        return newArr;
+    };
+    return filter;
+});
 
 
-            $.each(selection, function(idx, el) {
-                $('ul.image-selector > li[title="'+el.id+'"]').toggleClass('selected');
-            });
-            this_cat = cat_idx;
+app.controller(
+    "PiwigoController",
+    ["$scope", "$http", "$location",
+    function($scope, $http, $location) {
+        $scope.sites = [];
+        $scope.site = '';
+        $scope.page = 0;
+        $scope.pages = [];
+        $scope.postId = -1;
+        $scope.basket = {};
+        $scope.basketOrder = [];
+        $scope.perPage = 0;
+        $scope.messages = [];
+	    $scope.trMap = {};
+	    $scope.category = -1;
+	    $scope.categories = [];
+	    $scope.images = {};
+        $scope.imagesOrder = [];
+        $scope.linkTo = 'page';
+        $scope.imageType = 'thumb';
+        $scope.loading = false;
+        
+        $scope.linkToList = {
+            'none': 'Nothing',
+            'page': 'Page',
+            'fullsize': 'Fullsize'
+        };
+        
+        $scope.imageTypeList = {
+            'thumb': 'Thumbnail',
+            'fullsize': 'Fullsize'            
+        };
+        
+        $scope.setup = function() {
+            $scope.loading = true;
+	        $http.get('app.php?__a__=setup').success(function(data) {
+	            angular.forEach(data.result, function(value, key) {
+	                this[key] = value;
+	            }, $scope);
+	            $scope.loading = false;
+	            if ($scope.sites.length < 1)
+	                $scope.addMessage(
+	                    $scope.trMap['PiwigoMedia must be configured.'],
+	                    'error');
+	        });
+	    };
+	    
+	    $scope.resetCategories = function() {
+            $scope.categories = {};
+            $scope.category = -1;
+	    };
+	    
+	    $scope.resetImages = function() {
+	        $scope.images = {};
+            $scope.imagesOrder = [];
+	    };
+
+	    $scope.changeSite = function() {
+	        $scope.page = 0;
+	        $scope.refreshSite();
+	    };
+	    	    
+	    $scope.refreshSite = function() {
+            $scope.resetCategories();
+            $scope.resetImages();
             
-            if (images.length > 0) {
-                $('div.images-section').show();
-                $('div.style-section').show();
-                $('div.confirmation-section').show();
+	        if (!$scope.site)
+	            return;
+	            
+            $scope.loading = true;
+            
+            config = {
+                "params": {
+                    "__url__": $scope.site, 
+                    "__a__": "forward", 
+                    "format": "json", 
+                    "method": "pwg.categories.getList", 
+                    "recursive": true}
+            };
+            
+            $http.get('app.php', config).success(
+                function(data) {
+                    if ((data == undefined) || data["stat"] != "ok") {
+                        var msg = $scope.trMap["Error while reading from"] + " " + $scope.site + ". " +
+                            $scope.trMap["Please verify PiwigoMedia\'s configuration and try again."];
+                        $scope.addMessage(msg, 'error');
+                        $scope.loading = false;
+                        return;
+                    }
+                    
+                    angular.forEach(data.result.categories, 
+                        function(value, key) {
+                            $scope.categories[value.id] = value;
+                        }, 
+                        $scope);
+                        
+                    $scope.loading = false;
+                }
+            );
+	    };
+
+	    $scope.changeCategory = function() {
+	        $scope.page = 0;
+	        $scope.refreshCategory();
+	    };
+	    
+	    $scope.refreshCategory = function() {
+            $scope.resetImages();
+            
+            if ($scope.category == -1)
+                return;
+
+            $scope.loading = true;
+            
+    	    var config = {
+                "params": {"__url__": $scope.site,
+                    "__a__": "forward",  
+                    "format": "json", 
+                    "method": "pwg.categories.getImages", 
+                    "cat_id": $scope.category, 
+                    "page": $scope.page, 
+                    "per_page": $scope.perPage}
+            };
+
+            $http.get('app.php', config).success(
+                function(data) {
+                    if ((data == undefined) || data["stat"] != "ok") {
+                        var msg = $scope.trMap["Error reading image information, please try again."];
+                        $scope.addMessage(msg, 'error');
+                        $scope.loading = false;
+                        return;
+                    }
+                    angular.forEach(data.result.images, 
+                        function(value, key) {
+                            $scope.images[value.id] = value;
+                            $scope.imagesOrder.push(value.id);
+                        }, 
+                        $scope);
+                        
+                    var r = Math.ceil(
+                        $scope.categories[$scope.category].nb_images / $scope.perPage);
+                       
+                    $scope.pages = [];
+                    for (i=0; i<r;i++) {
+                        $scope.pages.push(i);
+                    }
+                        
+                    $scope.loading = false;
+                }
+            );
+	    };
+	    
+        $scope.addMessage = function(message, type) {
+            $scope.messages.push({'message': message, 'type': type})
+        };
+        
+        $scope.removeMessage = function(index) {
+            $scope.messages.splice(index, 1);
+        };
+        
+        $scope.setLinkTo = function(val) {
+            // TODO: validate
+            $scope.linkTo = val;
+        };
+        
+        $scope.setImageType = function(val) {
+            // TODO: validate
+            $scope.imageType = val;
+        };
+        
+        $scope.inBasket = function(image_id) {
+            return $scope.basketOrder.indexOf(image_id) != -1
+        };
+        
+        $scope.toFromBasket = function(image_id) {
+            var idx = $scope.basketOrder.indexOf(image_id);
+            if (idx != -1) {
+                $scope.basketOrder.splice(idx, 1);
+                delete $scope.basket[image_id];
+            } else {
+                $scope.basket[image_id] = $scope.images[image_id];
+                $scope.basketOrder.push(image_id);
             }
-            set_loading(false);
-        }
-	});
-};
+        };        
+        
+        $scope.insertPost = function() {
+            var target = "_blank";
+            var align = "";
+            
+            angular.forEach($scope.basketOrder, function(value, key) { 
+                var img = $scope.basket[value];
+                var url;
+                var thumbUrl;
+                
+                if ($scope.imageType == 'thumb')
+                    thumbUrl = img.derivatives.thumb.url;
+                else if ($scope.imageType == 'fullsize')
+                    thumbUrl = img.element_url;
+                    
+                if ($scope.linkTo == 'page')
+                    url = img.page_url;
+                else if ($scope.linkTo == 'fullsize')
+                    url = img.element_url;
+                else if ($scope.linkTo == 'none')
+                    url = '';
+                    
+                if (url) {
+                    html = '<a href="'+url+'" target="'+target+'" '+
+                        'class="piwigomedia-single-image">'+
+                            '<img src="'+thumbUrl+'" class="'+align+'" />'+
+                        '</a>';
+                } else {
+                    html = '<a class="piwigomedia-single-image">'+
+                            '<img src="'+thumbUrl+'" class="'+align+'" />'+
+                        '</a>';
+                }
 
-// insert an image into the WP post
-function insert_image_obj(img) {
-    align = $('div.style-section > fieldset > '+
-        'input[name="alignment"]:checked').val();
-    if (align == 'left')
-        align = 'alignleft';
-    else if (align == 'center')
-        align = 'aligncenter';
-    else if (align == 'right')
-        align = 'alignright';
-    else
-        align = '';
-    target_ = $('div.style-section > fieldset > input[name="target"]:checked').val();
+                window.parent.tinyMCE.execCommand('mceInsertContent',
+                    false, html);
 
-    if (target_ == 'same')
-        target_ = '_self';
-    else
-        target_ = '_blank';
+            }, null);
 
-    url_ = $('div.style-section > fieldset > '+
-        'input[name="url"]:checked').val();
-    if (url_ == 'fullsize')
-        url_ = img.derivatives.xxlarge.url; // fullsize image
-    else
-        url_ = img.categories[0].page_url; // image page
+            $scope.addMessage(
+                $scope.trMap['Total images inserted:'] + " " + $scope.basketOrder.length,
+                'success');            
+            $scope.emptyBasket();
+        };
+        
+        $scope.emptyBasket = function() {
+            $scope.basket = {};
+            $scope.basketOrder = [];
+        };
+        
+        $scope.categoryCount = function() {
+            return Object.keys($scope.categories).length;
+        };
+        
+       
+        $scope.getFullPath = function(category_id) {
+            if (!category_id) return;
+            
+            var cat = $scope.categories[category_id];
+            var res = cat.name;
+            
+            while (cat.id_uppercat != null) {
+                cat = $scope.categories[cat.id_uppercat];
+                res = cat.name + '/' + res;
+            }
+            return res;
+        };
 
-    imurl_ = $('div.style-section > fieldset > '+
-        'input[name="whatinsert"]:checked').val();
-    if (imurl_ == 'fullsize')
-        imurl_ = img.derivatives.xxlarge.url;
-    else
-        imurl_ = get_image_thumb(img);
+        $scope.imageClick = function(image_id) {
+            $scope.toFromBasket(image_id);
+        };
+        
+        $scope.setPage = function(page) {
+            $scope.page = page;
+            $scope.refreshCategory();
+        };
+        
+        $scope.setPerPage = function(value) {
+            $scope.perPage = value;
+            $scope.page = 0;
+            $scope.refreshCategory();
+        };
+        
 
-    window.parent.tinyMCE.execCommand('mceInsertContent',
-        false,
-        '<a href="'+url_+'" target="'+target_+'" '+
-        'class="piwigomedia-single-image">'+
-            '<img src="'+imurl_+'" class="'+align+'" />'+
-        '</a>'
-    );
-};
+	    $scope.setup();
 
-// insert all selected images into the WP post
-function insert_selected() {
-    $.each(selection, function(idx, el) {
-        insert_image_obj(el);
-    });
-}
+    }]);
+

@@ -1,143 +1,144 @@
 <?php
+/*
+PiwigoMedia Wordpress plugin
+Copyright (C) 2014  Joao Coutinho
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
     require_once('../../../wp-load.php');
 
-    // Verify post id
-    $error = null;
-
-    // Check permissions
     if (get_current_user_id() == 0)
-        die('no access');
-
-    $sites = array();
-    foreach (explode("\n", get_option('piwigomedia_piwigo_urls', '')) as $u) {
-        $tu = trim($u);
-        if (!empty($tu))
-            $sites[] = $tu;
-    }
-
-    if (count($sites) < 1)
-        $error = 'not_configured';
-
-    $per_page = get_option('piwigomedia_images_per_page', '30');
-
-    $error_msg = array(
-        'not_configured' => __('PiwigoMedia must be configured.', 'piwigomedia')
-    );
-
-    $tr_map = array(
-        'Error while reading from' => __('Error while reading from', 'piwigomedia'),
-        'Please verify PiwigoMedia\'s configuration and try again.' => __('Please verify PiwigoMedia\'s configuration and try again.', 'piwigomedia'),
-        'Error reading image information, please try again.' => __('Error reading image information, please try again.', 'piwigomedia'),
-        'Loading...' => __('Loading...', 'piwigomedia')
-    );
-
+        die(__('No access', 'piwigomedia'));
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="PiwigoMediaApp">
     <head>
         <title>PiwigoMedia</title>
         <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-        <script type='text/javascript' src='<?php echo get_bloginfo('wpurl');?>/wp-includes/js/tinymce/tiny_mce_popup.js'></script>  
-        <script type='text/javascript' src='js/jquery-1.5.min.js'></script>  
-        <script type='text/javascript'>
-	    var sites = <?php echo json_encode($sites); ?>;
-	    var post_id = <?php echo json_encode($post_id); ?>;
-	    var per_page = <?php echo json_encode($per_page); ?>;
-	    var tr_map = <?php echo json_encode($tr_map); ?>;
-        var this_page = 0;
-        var site_idx = 0;
-        var this_cat = 0;
-        var cats = new Array();
-        var selection = new Array();
-        var images = new Array();
-        </script>
+        <script type='text/javascript' src='<?php echo get_bloginfo('wpurl');?>/wp-includes/js/tinymce/tiny_mce_popup.js'></script>
+        <script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js'></script>
         <script type='text/javascript' src='js/piwigomedia.js'></script>
+
+        <link rel='stylesheet' href='css/bootstrap.min.css' type='text/css' />
         <link rel='stylesheet' href='css/popup.css' type='text/css' />
     </head>
-    <body>
-        <h1><span class="piwigo-text">Piwigo</span><span class="media-text">Media</span></h1>
-            <div class="messages-section section">
-                <ul>
-                    <?php 
-                    if (!is_null($error))
-                        echo "<li class=\"error\">".$error_msg[$error]."</li>";
-                    ?>
-                </ul>
+    
+    <body ng-controller="PiwigoController">
+        <h1 class="text-center"><span class="piwigo-text">Piwigo</span><span class="media-text">Media</span> <small>for WP</small></h1>
+        
+        <div class="form-group" ng-show="sites.length > 0">
+            <label class="col-sm-1"><span class="glyphicon glyphicon-camera"></span> {{trMap["Site"]}}</label>
+            <div class="col-sm-11">
+                <select class="form-control" ng-model="site" ng-options="s for s in sites" ng-change="changeSite()">
+                </select>
             </div>
-            <div class="site-category-section section">
-                <p class="instruction"><?php _e('Choose a site', 'piwigomedia') ?></p>
-                <form method="get" class="site-selection" action="">
-                    <input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
-                    <?php _e('Piwigo site:', 'piwigomedia') ?>
-                    <select name="site">
-                        <?php
-                        $i = 0;
-                        foreach($sites as $s) {
-                            echo '<option value="'.$i++.'">'.$s.'</option>';
-                        }
-                        ?>
-                    </select><input type="button" class="submit" value="<?php _e('Select', 'piwigomedia') ?>" onclick="refresh_site();" />
-                </form>
-
-            <?php if (is_null($error)) { ?>
-                <p class="instruction"><?php _e('Select a category', 'piwigomedia') ?></p>
-                <?php
-                echo "<form method=\"get\" class=\"category-selection\"  action=\"\">";
-                echo __('Category:', 'piwigomedia').' <select name="category"></select>';
-                echo "<input type=\"button\" class=\"submit\" onclick=\"refresh_category();\" value=\"".__('Select', 'piwigomedia')."\"/>";
-                echo "</form>";
-                ?>
-            <?php } ?>
+        </div>
+        
+        <div class="form-group"  ng-show="categoryCount() > 0 && !loading">
+            <label class="col-sm-1"><span class="glyphicon glyphicon-book"></span> {{trMap["Category"]}}</label>
+            <div class="col-sm-11">
+                <select ng-model="category" class="form-control" ng-change="changeCategory()">
+                    <option value="{{c.id}}" ng-repeat="(k, c) in categories" ng-if="c.nb_images > 0">{{getFullPath(c.id)}}</option>
+                </select>
             </div>
+        </div>
 
-            <div class="images-section section">
-                <p class="instruction"><?php _e('Select the images', 'piwigomedia') ?></p>
-                    <div class='current-category'>
-                      <p class='arrow'>&gt;</p><ol></ol>
-                      <div style="clear: both;"></div>
-                    </div>
-
-                    <div class="page-selection"><ol></ol></div>
-                    <ul class="image-selector">&nbsp;</ul>
-                    <div style="clear: both;"></div>
+        <div class="clearfix"></div>
+        
+        <div class="loader text-center" ng-if="loading"><img src="loader.gif"></div>
+        
+        <div class="panel">
+            <p>{{m.message}}</p>
+            <div class="alert pointer" role="alert" ng-repeat="m in messages" ng-class="{'alert-danger': m.type=='error', 'alert-success': m.type=='success'}" ng-click="removeMessage($index)">
+                <span class="glyphicon text-right" ng-class="{'glyphicon-remove': m.type=='error', 'glyphicon glyphicon-ok': m.type=='success'}"></span> {{m.message}}
+                
             </div>
+        </div>
 
-            <div class="style-section section">
-                <p class="instruction"><?php _e('Customize', 'piwigomedia') ?></p>
-                <fieldset>
-                    <legend><?php _e('Insert:', 'piwigomedia') ?></legend>
-                    <?php _e('Thumbnail', 'piwigomedia') ?> <input type="radio" name="whatinsert" value="thumb" checked="checked"/>
-                    <?php _e('Fullsize image', 'piwigomedia') ?> <input type="radio" name="whatinsert" value="fullsize"/>
-                </fieldset>
-                <fieldset>
-                    <legend><?php _e('Alignment:', 'piwigomedia') ?></legend>
-                    <?php _e('None', 'piwigomedia') ?> <input type="radio" name="alignment" value="none" checked="checked"/>
-                    <?php _e('Left', 'piwigomedia') ?> <input type="radio" name="alignment" value="left"/>
-                    <?php _e('Center', 'piwigomedia') ?> <input type="radio" name="alignment" value="center"/>
-                    <?php _e('Right', 'piwigomedia') ?> <input type="radio" name="alignment" value="right"/>
-                </fieldset>
-                <fieldset>
-                    <legend><?php _e('Link to:', 'piwigomedia') ?></legend>
-                    <?php _e('Image page', 'piwigomedia') ?> <input type="radio" name="url" value="page" checked="checked"/>
-                    <?php _e('Fullsize image', 'piwigomedia') ?> <input type="radio" name="url" value="fullsize"/>
-                </fieldset>
-                <fieldset>
-                    <legend><?php _e('Link target:', 'piwigomedia') ?></legend>
-                    <?php _e('New window', 'piwigomedia') ?> <input type="radio" name="target" value="new" checked="checked"/>
-                    <?php _e('Same window', 'piwigomedia') ?> <input type="radio" name="target" value="same"/>
-                </fieldset>
-            </div>
-
-            <div class="confirmation-section section">
-                <div class="confirm-button">
-                    <a href="#" onclick="insert_selected();tinyMCEPopup.close();"><?php _e('Insert into post', 'piwigomedia') ?></a>
+        <div class="operations-panel">
+            <div class="btn-group" ng-if="pages.length > 0">
+                <!-- page selector -->
+                <div class="btn-group pointer">
+                  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    {{page+1}} <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="pa in pages" ng-click="setPage(pa)" ng-class="{active: $index == page}"><a>{{pa+1}}</a>
+                  </ul>
                 </div>
-                <div style="clear: both;"></div>
+                
+                <!-- per page selector -->
+                <div class="btn-group pointer">
+                  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    x {{perPage}} <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="count in [10,30,50,200,500]" ng-click="setPerPage(count)" ng-class="{active: perPage == count}"><a>{{count}}</a></li>
+                  </ul>
+                </div>
             </div>
-
-           <div class="footer">PiwigoMedia 2012 - <a href="http://joaoubaldo.com/" target="_blank"><?php _e('author website', 'piwigomedia') ?></a></div>
+                        
+        
+            <div class="btn-group">
+              <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="(k, v) in imageTypeList" ng-class="{active: k==imageType}"><a href="#" ng-click="setImageType(k)">{{v}}</a></li>
+              </ul>
+            </div>
+            <div class="btn-group" ng-if="basketOrder.length > 0">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    {{trMap["Image type"]}} <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="(k, v) in imageTypeList" ng-class="{active: k==imageType}"><a href="#" ng-click="setImageType(k)">{{v}}</a></li>
+                  </ul>
+                </div>
+                
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    {{trMap["Link to"]}} <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="(k, v) in linkToList" ng-class="{active: k==linkTo}"><a href="#" ng-click="setLinkTo(k)">{{v}}</a></li>
+                  </ul>
+                </div>
+                
+                <button type="button" class="btn btn-primary" ng-click="insertPost()"><span class="badge">{{basketOrder.length}}</span> {{trMap["Insert"]}}</button>
+           </div>
+        </div>
+        
+        <div class="grid-container">
+            <div ng-show="!loading" class="row" ng-repeat="row in imagesOrder|splitEvery:4">
+                <div class="col-xs-3" ng-repeat="id in row" ng-click="imageClick(id)">
+                    <a href="#" class="thumbnail" ng-class="{selected: inBasket(id)}">
+                        <img ng-src="{{images[id].derivatives.thumb.url}}">
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+       <hr>
+       <p class="text-right italic-text footer">
+        PiwigoMedia <a href="http://b.joaoubaldo.com/" target="_blank">blog</a> | <a href="https://github.com/joaoubaldo/piwigomedia" target="_blank">github</a>
+       </p>
+       
+       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+       <script type='text/javascript' src='js/bootstrap.min.js'></script>
     </body>
 </html>
