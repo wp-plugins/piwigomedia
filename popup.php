@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         <title>PiwigoMedia</title>
         <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
         <script type='text/javascript' src='<?php echo get_bloginfo('wpurl');?>/wp-includes/js/tinymce/tiny_mce_popup.js'></script>
-        <script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js'></script>
+        <script type='text/javascript' src='js/angular.min.js'></script>
         <script type='text/javascript' src='js/piwigomedia.js'></script>
 
         <link rel='stylesheet' href='css/bootstrap.min.css' type='text/css' />
@@ -50,18 +50,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             </div>
         </div>
         
-        <div class="form-group"  ng-show="categoryCount() > 0 && !loading">
+        <div class="form-group"  ng-show="categoriesOrder.length > 0 && !loading">
             <label class="col-sm-1"><span class="glyphicon glyphicon-book"></span> {{trMap["Category"]}}</label>
             <div class="col-sm-11">
                 <select ng-model="category" class="form-control" ng-change="changeCategory()">
-                    <option value="{{c.id}}" ng-repeat="(k, c) in categories" ng-if="c.nb_images > 0">{{getFullPath(c.id)}}</option>
+                    <option value="{{k}}" ng-repeat="k in categoriesOrder" ng-if="categories[k].nb_images > 0">{{getFullPath(k)}}</option>
                 </select>
             </div>
         </div>
 
         <div class="clearfix"></div>
         
-        <div class="loader text-center" ng-if="loading"><img src="loader.gif"></div>
+        <div class="loader text-center" ng-if="loading"><img src="img/loader.gif"></div>
         
         <div class="panel">
             <p>{{m.message}}</p>
@@ -106,7 +106,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     {{trMap["Image type"]}} <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu">
-                    <li ng-repeat="(k, v) in imageTypeList" ng-class="{active: k==imageType}"><a href="#" ng-click="setImageType(k)">{{v}}</a></li>
+                    <li ng-repeat="(k, v) in imageTypeList" ng-class="{active: k==imageType}"><a href="#" ng-click="setImageType(k)">{{trMap[v]}}</a></li>
                   </ul>
                 </div>
                 
@@ -115,7 +115,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     {{trMap["Link to"]}} <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu">
-                      <li ng-repeat="(k, v) in linkToList" ng-class="{active: k==linkTo}"><a href="#" ng-click="setLinkTo(k)">{{v}}</a></li>
+                      <li ng-repeat="(k, v) in linkToList" ng-class="{active: k==linkTo}"><a href="#" ng-click="setLinkTo(k)">{{trMap[v]}}</a></li>
                   </ul>
                 </div>
                 
@@ -134,11 +134,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </div>
         
        <hr>
-       <p class="text-right italic-text footer">
-        PiwigoMedia <a href="http://b.joaoubaldo.com/" target="_blank">blog</a> | <a href="https://github.com/joaoubaldo/piwigomedia" target="_blank">github</a>
+       <p class="text-center italic-text footer">
+        <a href="http://b.joaoubaldo.com/" target="_blank"><img src="img/wordpress.png"></a> | <a href="https://github.com/joaoubaldo/piwigomedia" target="_blank"><img src="img/github.png"></a> | <a href="https://www.facebook.com/Piwigomedia" target="_blank"><img src="img/facebook.png"></a>
        </p>
        
-       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+       <script src="js/jquery-1.11.1.min.js"></script>
        <script type='text/javascript' src='js/bootstrap.min.js'></script>
     </body>
 </html>
