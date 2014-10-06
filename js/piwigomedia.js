@@ -55,7 +55,8 @@ app.controller(
         $scope.messages = [];
 	    $scope.trMap = {};
 	    $scope.category = -1;
-	    $scope.categories = [];
+	    $scope.categories = {};
+	    $scope.categoriesOrder = []
 	    $scope.images = {};
         $scope.imagesOrder = [];
         $scope.linkTo = 'page';
@@ -70,7 +71,8 @@ app.controller(
         
         $scope.imageTypeList = {
             'thumb': 'Thumbnail',
-            'fullsize': 'Fullsize'            
+            'fullsize': 'Fullsize',
+            'scode_image': 'Image code'
         };
         
         $scope.setup = function() {
@@ -90,6 +92,7 @@ app.controller(
 	    $scope.resetCategories = function() {
             $scope.categories = {};
             $scope.category = -1;
+            $scope.categoriesOrder = []
 	    };
 	    
 	    $scope.resetImages = function() {
@@ -112,6 +115,7 @@ app.controller(
             $scope.loading = true;
             
             config = {
+                "timeout": 10000,
                 "params": {
                     "__url__": $scope.site, 
                     "__a__": "forward", 
@@ -129,13 +133,28 @@ app.controller(
                         $scope.loading = false;
                         return;
                     }
-                    
+                    var tmp = [];
                     angular.forEach(data.result.categories, 
                         function(value, key) {
                             $scope.categories[value.id] = value;
+                            tmp.push([$scope.getFullPath(value.id), value.id]);
                         }, 
                         $scope);
-                        
+
+                    /* Sort by full category path */
+                    tmp.sort(function(current, next){
+                        return current[0] > next[0] ? 1: -1;
+                    });
+                    
+                    /* Copy array */
+                    angular.forEach(tmp, 
+                        function(value, key) {
+                            $scope.categoriesOrder.push(value[1]);
+                        },
+                        null);
+
+                    tmp = [];
+                       
                     $scope.loading = false;
                 }
             );
@@ -155,6 +174,7 @@ app.controller(
             $scope.loading = true;
             
     	    var config = {
+        	    "timeout": 10000,
                 "params": {"__url__": $scope.site,
                     "__a__": "forward",  
                     "format": "json", 
@@ -233,6 +253,13 @@ app.controller(
                 var img = $scope.basket[value];
                 var url;
                 var thumbUrl;
+                
+                if ($scope.imageType == 'scode_image') {
+                    var code = "[pwg-image site=\""+$scope.site+"\" id=\""+value+"\"]";
+                    window.parent.tinyMCE.execCommand('mceInsertContent',
+                        false, code);
+                    return true;
+                }
                 
                 if ($scope.imageType == 'thumb')
                     thumbUrl = img.derivatives.thumb.url;
